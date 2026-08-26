@@ -16,7 +16,9 @@ pip install -e .
 This checkout also includes a self-contained, dependency-free city racing simulation in `index.html`.
 It runs in a modern browser and uses a hand-built canvas renderer with a downtown loop, black SR-08
 performance car, traffic opponents, nitro, vehicle telemetry, tire/grip feedback, lap timing,
-engine audio, camera modes, and keyboard/touch controls.
+engine audio, camera modes, and keyboard/touch controls. The `L` key or globe button opens an
+Arabic open-world hub with region selection, player profiles, activities, friends, chat, and level
+cards based on the supplied world-map reference.
 
 ```bash
 python3 -m http.server 4173 --bind 0.0.0.0

@@ -30,6 +30,7 @@
       </div>
 
       <div class="top-actions">
+        <button class="icon-button world-icon-button" id="worldButton" type="button" aria-label="Open world map" title="Open world map">⌘</button>
         <button class="icon-button" id="guideButton" type="button" aria-label="Open control guide" title="Open control guide">?</button>
         <button class="icon-button" id="soundButton" type="button" aria-label="Mute engine audio" title="Mute engine audio">
           <svg class="sound-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.5-.7a5 5 0 0 1 0 7.4M18.7 5.8a9.5 9.5 0 0 1 0 12.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -146,6 +147,7 @@
             <h2>Own the<br /><em>streets.</em></h2>
             <p>Thread through the downtown loop, manage your tires and use every burst of nitro. Clean lines win races.</p>
             <button class="start-button" id="startButton" type="button"><span class="start-button-icon">▶</span><span>START ENGINE</span><small>ENTER</small></button>
+            <button class="world-link" id="worldLaunchButton" type="button"><span>◎</span> EXPLORE OPEN WORLD <small>L</small></button>
           </div>
           <div class="guide-card objective-guide">
             <div class="guide-card-title"><span class="flag-mark">⚑</span><strong>OBJECTIVE</strong></div>
@@ -181,6 +183,86 @@
           </div>
         </div>
         <div class="guide-foot"><span class="pulse-ring"></span> SR-08 / RWD · 2.0 TURBO · 6 SPEED · CLEAR 18°C <b>Press ENTER to start</b></div>
+      </div>
+    </section>
+
+    <section class="world-overlay hidden" id="worldOverlay" aria-hidden="true" dir="rtl">
+      <div class="world-shell">
+        <header class="world-header">
+          <div class="world-title-block">
+            <div class="world-kicker">STREET RUSH / OPEN WORLD</div>
+            <h2>شخصيات اللاعبين</h2>
+            <h3>العالم المفتوح</h3>
+            <p>عالم مفتوح ضخم يمكنك استكشافه، التحدي، والتفاعل مع لاعبين آخرين.</p>
+          </div>
+          <button class="world-close" id="worldCloseButton" type="button" aria-label="Close world map">×</button>
+        </header>
+        <nav class="world-nav" aria-label="World navigation">
+          <button type="button" data-world-tab="chat">▣ <span>دردشة وصوت</span></button>
+          <button type="button" data-world-tab="races">🏆 <span>سباقات ومنافسات</span></button>
+          <button type="button" data-world-tab="social">♟ <span>تفاعل اجتماعي</span></button>
+          <button type="button" data-world-tab="cars">▰ <span>تعديل السيارات</span></button>
+          <button type="button" data-world-tab="events">⌖ <span>مهام وتحديات</span></button>
+          <button type="button" data-world-tab="explore" class="active">◎ <span>استكشاف حر</span></button>
+        </nav>
+
+        <div class="world-content">
+          <aside class="world-characters left-characters" aria-label="Player characters">
+            <article class="character-card character-red">
+              <div class="character-photo photo-karim"><span class="character-silhouette">♟</span><i class="car-shadow"></i></div>
+              <div class="character-copy"><h4>كريم البطل</h4><p>المتخصص: سباقات الشوارع</p><p>المستوى: <b>25</b></p><p>السمعة: <b class="gold-text">محترف</b></p><p>السيارة المفضلة: <b>Nissan GT-R Nismo</b></p><div class="xp-row"><span>XP 15,750 / 25,000</span><i><b></b></i></div><button type="button">عرض الملف الشخصي</button></div>
+            </article>
+            <article class="character-card character-purple">
+              <div class="character-photo photo-laila"><span class="character-silhouette">♙</span><i class="car-shadow"></i></div>
+              <div class="character-copy"><h4>ليلى الحداد</h4><p>المتخصصة: التعديلات والأداء</p><p>المستوى: <b>22</b></p><p>السمعة: <b class="gold-text">ميكانيكي محترف</b></p><p>السيارة المفضلة: <b>Toyota Supra MK4</b></p><div class="xp-row"><span>XP 12,300 / 20,000</span><i><b></b></i></div><button type="button">عرض الملف الشخصي</button></div>
+            </article>
+            <article class="character-card character-gold">
+              <div class="character-photo photo-salem"><span class="character-silhouette">♙</span><i class="car-shadow"></i></div>
+              <div class="character-copy"><h4>سالم القحطاني</h4><p>المتخصص: الاستكشاف الحر</p><p>المستوى: <b>20</b></p><p>السمعة: <b class="gold-text">مغامر</b></p><p>السيارة المفضلة: <b>Mercedes G63 AMG</b></p><div class="xp-row"><span>XP 8,900 / 18,000</span><i><b></b></i></div><button type="button">عرض الملف الشخصي</button></div>
+            </article>
+            <div class="friends-panel"><h4>تواصل مع لاعبين آخرين</h4><div><span class="friend-avatar">◉</span><b>Racer_X</b><small>المستوى 23</small><i class="online"></i></div><div><span class="friend-avatar">◉</span><b>Speed_Demon</b><small>المستوى 27</small><i class="busy"></i></div><div><span class="friend-avatar">◉</span><b>Drift_King</b><small>المستوى 21</small><i class="online"></i></div><div><span class="friend-avatar">◉</span><b>Night_Rider</b><small>المستوى 24</small><i class="online"></i></div><button type="button">عرض جميع اللاعبين (124)</button></div>
+          </aside>
+
+          <section class="world-map-section" aria-label="Open world map">
+            <div class="world-map-frame">
+              <canvas id="worldMapCanvas" aria-label="Open world map"></canvas>
+              <div class="map-region region-mountains" data-region="mountains"><span>♠</span> الجبال الشمالية</div>
+              <div class="map-region region-city" data-region="city"><span>▥</span> المدينة الكبرى</div>
+              <div class="map-region region-forest" data-region="forest"><span>♣</span> منطقة الغابات</div>
+              <div class="map-region region-lakes" data-region="lakes"><span>≋</span> منطقة البحيرات</div>
+              <div class="map-region region-industry" data-region="industry"><span>▥</span> المنطقة الصناعية</div>
+              <div class="map-region region-coast" data-region="coast"><span>♨</span> الساحل الجنوبي</div>
+              <div class="map-region region-desert" data-region="desert"><span>♨</span> الصحراء الغربية</div>
+              <div class="map-region region-airport" data-region="airport"><span>✈</span> مطار الحرية</div>
+              <div class="map-compass">N</div>
+              <div class="map-zoom"><button type="button">+</button><button type="button">−</button></div>
+            </div>
+            <div class="activity-heading"><span>النشاطات الحالية في العالم</span><small>LIVE ACTIVITIES / 04</small></div>
+            <div class="activity-grid">
+              <button class="activity-card activity-coast" type="button" data-level="coast"><span class="activity-image">◒</span><span class="activity-copy"><b>استكشاف حر</b><strong>الساحل الجنوبي</strong><small>20 / 20 لاعبين</small></span><em>انضمام</em></button>
+              <button class="activity-card activity-desert" type="button" data-level="desert"><span class="activity-image">▰</span><span class="activity-copy"><b>مهمة الهروب</b><strong>الصحراء الغربية</strong><small>3 / 6 لاعبين</small></span><em>انضمام</em></button>
+              <button class="activity-card activity-industry" type="button" data-level="industry"><span class="activity-image">◆</span><span class="activity-copy"><b>تحدي التعديل</b><strong>المنطقة الصناعية</strong><small>5 / 8 لاعبين</small></span><em>انضمام</em></button>
+              <button class="activity-card activity-city" type="button" data-level="city"><span class="activity-image">↗</span><span class="activity-copy"><b>سباق الشوارع</b><strong>المدينة الكبرى</strong><small>8 / 16 لاعبين</small></span><em>انضمام</em></button>
+            </div>
+          </section>
+
+          <aside class="world-characters right-characters" aria-label="Player profiles and chat">
+            <article class="character-card character-orange">
+              <div class="character-photo photo-fahad"><span class="character-silhouette">♟</span><i class="car-shadow"></i></div>
+              <div class="character-copy"><h4>فهد السبيعي</h4><p>المتخصص: السباقات الاحترافية</p><p>المستوى: <b>28</b></p><p>السمعة: <b class="gold-text">بطل الحلبات</b></p><p>السيارة المفضلة: <b>Lamborghini Huracán</b></p><div class="xp-row"><span>XP 22,150 / 30,000</span><i><b></b></i></div><button type="button">عرض الملف الشخصي</button></div>
+            </article>
+            <article class="character-card character-blue">
+              <div class="character-photo photo-noura"><span class="character-silhouette">♙</span><i class="car-shadow"></i></div>
+              <div class="character-copy"><h4>نورة العنزي</h4><p>المتخصصة: المهام والتحديات</p><p>المستوى: <b>24</b></p><p>السمعة: <b class="gold-text">خبيرة المهام</b></p><p>السيارة المفضلة: <b>Ford Mustang GT</b></p><div class="xp-row"><span>XP 16,700 / 24,000</span><i><b></b></i></div><button type="button">عرض الملف الشخصي</button></div>
+            </article>
+            <article class="character-card character-gray">
+              <div class="character-photo photo-ahmed"><span class="character-silhouette">♙</span><i class="car-shadow"></i></div>
+              <div class="character-copy"><h4>أحمد المهيب</h4><p>المتخصص: الهروب والمطاردات</p><p>المستوى: <b>26</b></p><p>السمعة: <b class="gold-text">مطارد مخضرم</b></p><p>السيارة المفضلة: <b>Dodge Challenger SRT</b></p><div class="xp-row"><span>XP 19,450 / 28,000</span><i><b></b></i></div><button type="button">عرض الملف الشخصي</button></div>
+            </article>
+            <div class="chat-panel"><h4>الدردشة العامة</h4><p><b>كريم البطل:</b> هل نبدأ سباق الليل؟ <time>10:45 PM</time></p><p><b>ليلى الحداد:</b> أنا جاهزة! <time>10:46 PM</time></p><p><b>فهد السبيعي:</b> موقع السباق في المدينة الكبرى <time>10:47 PM</time></p><p><b>سالم القحطاني:</b> سأصل بعد 10 دقائق <time>10:48 PM</time></p><div class="chat-input"><input placeholder="اكتب رسالتك..." aria-label="Chat message" /><button type="button">إرسال</button></div></div>
+          </aside>
+        </div>
+        <footer class="world-footer"><span>💡 نصائح مهمة</span><p>استكشف العالم لاكتشاف مناطق جديدة ومهام مخفية</p><i></i><p>طوّر سيارتك باستمرار لتكون الأفضل</p><i></i><p>تفاعل مع اللاعبين الآخرين لبناء صداقات ومنافسات</p><i></i><p>اختر الإطارات المناسبة لكل طقس ومسار</p></footer>
       </div>
     </section>
 

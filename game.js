@@ -5,11 +5,17 @@
   const ctx = canvas.getContext('2d');
   const mapCanvas = document.getElementById('mapCanvas');
   const mapCtx = mapCanvas.getContext('2d');
+  const worldMapCanvas = document.getElementById('worldMapCanvas');
+  const worldMapCtx = worldMapCanvas.getContext('2d');
 
   const ui = {
     startOverlay: document.getElementById('startOverlay'),
     startButton: document.getElementById('startButton'),
     guideButton: document.getElementById('guideButton'),
+    worldButton: document.getElementById('worldButton'),
+    worldLaunchButton: document.getElementById('worldLaunchButton'),
+    worldOverlay: document.getElementById('worldOverlay'),
+    worldCloseButton: document.getElementById('worldCloseButton'),
     pauseOverlay: document.getElementById('pauseOverlay'),
     pauseButton: document.getElementById('pauseButton'),
     resumeButton: document.getElementById('resumeButton'),
@@ -56,9 +62,15 @@
   let mapWidth = 0;
   let mapHeight = 0;
   let mapRatio = 1;
+  let worldMapWidth = 0;
+  let worldMapHeight = 0;
+  let worldMapRatio = 1;
+  let worldMapZoom = 1;
+  let selectedRegion = 'city';
   let started = false;
   let paused = false;
   let muted = false;
+  let worldWasRunning = false;
   let toastTimer = null;
   let lastFrame = performance.now();
   let lastHudUpdate = 0;
@@ -476,6 +488,14 @@
     mapCanvas.width = Math.floor(mapWidth * mapRatio);
     mapCanvas.height = Math.floor(mapHeight * mapRatio);
     mapCtx.setTransform(mapRatio, 0, 0, mapRatio, 0, 0);
+
+    const worldMapRect = worldMapCanvas.getBoundingClientRect();
+    worldMapWidth = Math.max(1, worldMapRect.width);
+    worldMapHeight = Math.max(1, worldMapRect.height);
+    worldMapRatio = Math.min(window.devicePixelRatio || 1, 2);
+    worldMapCanvas.width = Math.floor(worldMapWidth * worldMapRatio);
+    worldMapCanvas.height = Math.floor(worldMapHeight * worldMapRatio);
+    worldMapCtx.setTransform(worldMapRatio, 0, 0, worldMapRatio, 0, 0);
   }
 
   function traceTrack(targetCtx) {
@@ -1004,6 +1024,7 @@
     }
     drawCameraOverlay(ctx, cameraMode, carY);
     drawMap();
+    drawWorldMap();
   }
 
   function drawNitroFlames(targetCtx, centerX, centerY, scale) {
@@ -1115,6 +1136,176 @@
     mapCtx.lineWidth = 1;
     mapCtx.beginPath(); mapCtx.moveTo(playerX, playerY); mapCtx.lineTo(playerX + Math.cos(state.heading) * 8, playerY + Math.sin(state.heading) * 8); mapCtx.stroke();
     mapCtx.restore();
+  }
+
+  function drawWorldMap() {
+    worldMapCtx.setTransform(worldMapRatio, 0, 0, worldMapRatio, 0, 0);
+    worldMapCtx.clearRect(0, 0, worldMapWidth, worldMapHeight);
+    if (worldMapWidth < 2 || worldMapHeight < 2) return;
+
+    const w = worldMapWidth;
+    const h = worldMapHeight;
+    const mx = (value) => value * w;
+    const my = (value) => value * h;
+
+    const ocean = worldMapCtx.createLinearGradient(0, 0, w, h);
+    ocean.addColorStop(0, '#244e61');
+    ocean.addColorStop(.44, '#173b4d');
+    ocean.addColorStop(1, '#0d2534');
+    worldMapCtx.fillStyle = ocean;
+    worldMapCtx.fillRect(0, 0, w, h);
+
+    worldMapCtx.save();
+    worldMapCtx.translate(w * .5, h * .5);
+    worldMapCtx.scale(worldMapZoom, worldMapZoom);
+    worldMapCtx.translate(-w * .5, -h * .5);
+
+    const island = () => {
+      worldMapCtx.beginPath();
+      worldMapCtx.moveTo(mx(.08), my(.12));
+      worldMapCtx.bezierCurveTo(mx(.2), my(.03), mx(.39), my(.035), mx(.54), my(.08));
+      worldMapCtx.bezierCurveTo(mx(.73), my(.08), mx(.88), my(.17), mx(.93), my(.31));
+      worldMapCtx.bezierCurveTo(mx(.98), my(.45), mx(.88), my(.58), mx(.9), my(.71));
+      worldMapCtx.bezierCurveTo(mx(.86), my(.84), mx(.7), my(.97), mx(.51), my(.93));
+      worldMapCtx.bezierCurveTo(mx(.34), my(.99), mx(.17), my(.91), mx(.1), my(.77));
+      worldMapCtx.bezierCurveTo(mx(.04), my(.64), mx(.15), my(.52), mx(.12), my(.4));
+      worldMapCtx.bezierCurveTo(mx(.08), my(.3), mx(.03), my(.2), mx(.08), my(.12));
+      worldMapCtx.closePath();
+    };
+
+    island();
+    worldMapCtx.shadowColor = 'rgba(0,0,0,.5)';
+    worldMapCtx.shadowBlur = 18;
+    worldMapCtx.fillStyle = '#718b70';
+    worldMapCtx.fill();
+    worldMapCtx.shadowBlur = 0;
+    island();
+    const land = worldMapCtx.createLinearGradient(0, 0, w, h);
+    land.addColorStop(0, '#9aa77c');
+    land.addColorStop(.38, '#718d70');
+    land.addColorStop(.68, '#a19768');
+    land.addColorStop(1, '#c08b55');
+    worldMapCtx.fillStyle = land;
+    worldMapCtx.fill();
+    worldMapCtx.save();
+    island();
+    worldMapCtx.clip();
+
+    // Mountain range.
+    for (let i = 0; i < 13; i += 1) {
+      const x = .11 + i * .045;
+      const peak = .13 + ((i * 17) % 34) / 100;
+      worldMapCtx.fillStyle = i % 2 ? '#526c6a' : '#455e61';
+      worldMapCtx.beginPath();
+      worldMapCtx.moveTo(mx(x - .07), my(.31));
+      worldMapCtx.lineTo(mx(x), my(peak));
+      worldMapCtx.lineTo(mx(x + .09), my(.31));
+      worldMapCtx.closePath();
+      worldMapCtx.fill();
+      worldMapCtx.fillStyle = 'rgba(236, 230, 202, .52)';
+      worldMapCtx.beginPath();
+      worldMapCtx.moveTo(mx(x), my(peak));
+      worldMapCtx.lineTo(mx(x + .023), my(peak + .063));
+      worldMapCtx.lineTo(mx(x - .024), my(peak + .06));
+      worldMapCtx.closePath();
+      worldMapCtx.fill();
+    }
+
+    // Forest texture.
+    worldMapCtx.fillStyle = 'rgba(38, 91, 61, .45)';
+    for (let i = 0; i < 90; i += 1) {
+      const x = .17 + ((i * 43) % 540) / 1000;
+      const y = .29 + ((i * 71) % 400) / 1000;
+      if (x > .57 || y > .72) continue;
+      worldMapCtx.beginPath();
+      worldMapCtx.arc(mx(x), my(y), 2.5 + (i % 4), 0, TAU);
+      worldMapCtx.fill();
+    }
+
+    // Lakes and river system.
+    worldMapCtx.fillStyle = 'rgba(49, 127, 155, .76)';
+    worldMapCtx.beginPath();
+    worldMapCtx.moveTo(mx(.39), my(.39));
+    worldMapCtx.bezierCurveTo(mx(.44), my(.35), mx(.51), my(.39), mx(.53), my(.46));
+    worldMapCtx.bezierCurveTo(mx(.55), my(.54), mx(.49), my(.57), mx(.43), my(.52));
+    worldMapCtx.bezierCurveTo(mx(.38), my(.49), mx(.36), my(.43), mx(.39), my(.39));
+    worldMapCtx.fill();
+    worldMapCtx.beginPath();
+    worldMapCtx.moveTo(mx(.27), my(.15));
+    worldMapCtx.bezierCurveTo(mx(.29), my(.29), mx(.34), my(.4), mx(.4), my(.53));
+    worldMapCtx.bezierCurveTo(mx(.44), my(.65), mx(.51), my(.76), mx(.56), my(.94));
+    worldMapCtx.strokeStyle = 'rgba(58, 147, 174, .6)';
+    worldMapCtx.lineWidth = 4;
+    worldMapCtx.stroke();
+
+    // Industrial and desert zones.
+    worldMapCtx.fillStyle = 'rgba(164, 105, 53, .38)';
+    worldMapCtx.beginPath();
+    worldMapCtx.moveTo(mx(.63), my(.57)); worldMapCtx.lineTo(mx(.9), my(.54)); worldMapCtx.lineTo(mx(.88), my(.88)); worldMapCtx.lineTo(mx(.61), my(.87)); worldMapCtx.closePath(); worldMapCtx.fill();
+    worldMapCtx.fillStyle = 'rgba(197, 139, 74, .5)';
+    for (let i = 0; i < 20; i += 1) {
+      const x = .65 + (i % 5) * .047;
+      const y = .65 + Math.floor(i / 5) * .045;
+      worldMapCtx.beginPath(); worldMapCtx.arc(mx(x), my(y), 1.8 + i % 3, 0, TAU); worldMapCtx.fill();
+    }
+
+    // Dense city blocks in the north-east.
+    worldMapCtx.fillStyle = 'rgba(102, 104, 83, .75)';
+    worldMapCtx.fillRect(mx(.66), my(.13), mx(.2), my(.18));
+    worldMapCtx.strokeStyle = 'rgba(39, 64, 69, .62)';
+    worldMapCtx.lineWidth = 1;
+    for (let row = 0; row < 5; row += 1) {
+      for (let col = 0; col < 7; col += 1) {
+        worldMapCtx.strokeRect(mx(.67 + col * .026), my(.14 + row * .03), mx(.02), my(.022));
+      }
+    }
+
+    // Major road network.
+    const roads = [
+      [[.16,.2],[.31,.3],[.48,.4],[.68,.23],[.84,.23]],
+      [[.19,.7],[.32,.57],[.48,.4],[.63,.38],[.78,.27]],
+      [[.2,.87],[.34,.74],[.55,.68],[.73,.71],[.86,.83]],
+      [[.15,.47],[.31,.49],[.45,.52],[.6,.55],[.81,.48]],
+      [[.31,.08],[.37,.27],[.48,.4],[.51,.6],[.47,.88]],
+      [[.09,.64],[.29,.64],[.47,.6],[.66,.53],[.91,.38]]
+    ];
+    for (const road of roads) {
+      worldMapCtx.beginPath();
+      worldMapCtx.moveTo(mx(road[0][0]), my(road[0][1]));
+      for (let i = 1; i < road.length; i += 1) worldMapCtx.lineTo(mx(road[i][0]), my(road[i][1]));
+      worldMapCtx.strokeStyle = 'rgba(38, 59, 59, .55)';
+      worldMapCtx.lineWidth = 4;
+      worldMapCtx.stroke();
+      worldMapCtx.strokeStyle = 'rgba(229, 212, 166, .66)';
+      worldMapCtx.lineWidth = 1;
+      worldMapCtx.stroke();
+    }
+
+    // Smaller branching streets.
+    worldMapCtx.strokeStyle = 'rgba(226, 210, 166, .36)';
+    worldMapCtx.lineWidth = .7;
+    for (let i = 0; i < 18; i += 1) {
+      const x = .19 + (i % 6) * .12;
+      const y = .27 + Math.floor(i / 6) * .16;
+      worldMapCtx.beginPath(); worldMapCtx.moveTo(mx(x), my(y)); worldMapCtx.lineTo(mx(x + .07), my(y + .1)); worldMapCtx.stroke();
+    }
+    worldMapCtx.restore();
+
+    // Selected destination marker and a few activity pips.
+    const selectedPoints = { city: [.76,.22], mountains: [.28,.16], forest: [.25,.39], lakes: [.45,.46], industry: [.74,.55], coast: [.24,.75], desert: [.77,.75], airport: [.51,.86] };
+    const selected = selectedPoints[selectedRegion] || selectedPoints.city;
+    worldMapCtx.fillStyle = 'rgba(238, 185, 70, .2)';
+    worldMapCtx.beginPath(); worldMapCtx.arc(mx(selected[0]), my(selected[1]), 18, 0, TAU); worldMapCtx.fill();
+    worldMapCtx.fillStyle = '#f2c95f';
+    worldMapCtx.beginPath(); worldMapCtx.arc(mx(selected[0]), my(selected[1]), 5, 0, TAU); worldMapCtx.fill();
+    worldMapCtx.strokeStyle = 'rgba(255, 231, 158, .9)';
+    worldMapCtx.lineWidth = 1.3;
+    worldMapCtx.beginPath(); worldMapCtx.arc(mx(selected[0]), my(selected[1]), 9, 0, TAU); worldMapCtx.stroke();
+    for (const point of [[.36,.57],[.62,.26],[.57,.76],[.3,.79],[.83,.42]]) {
+      worldMapCtx.fillStyle = '#d5a942';
+      worldMapCtx.beginPath(); worldMapCtx.arc(mx(point[0]), my(point[1]), 2.4, 0, TAU); worldMapCtx.fill();
+    }
+    worldMapCtx.restore();
   }
 
   function formatTime(seconds) {
@@ -1239,6 +1430,37 @@
     ui.startOverlay.classList.remove('hidden');
   }
 
+  function openWorldMap() {
+    worldWasRunning = started && !paused && !state.finished;
+    if (started) togglePause(true);
+    ui.worldOverlay.classList.remove('hidden');
+    ui.worldOverlay.setAttribute('aria-hidden', 'false');
+    drawWorldMap();
+  }
+
+  function closeWorldMap() {
+    ui.worldOverlay.classList.add('hidden');
+    ui.worldOverlay.setAttribute('aria-hidden', 'true');
+    if (worldWasRunning) togglePause(false);
+    worldWasRunning = false;
+  }
+
+  function selectRegion(region) {
+    selectedRegion = region;
+    document.querySelectorAll('[data-region]').forEach((label) => label.classList.toggle('active', label.dataset.region === selectedRegion));
+    drawWorldMap();
+    const regionNames = { city: 'المدينة الكبرى', mountains: 'الجبال الشمالية', forest: 'منطقة الغابات', lakes: 'منطقة البحيرات', industry: 'المنطقة الصناعية', coast: 'الساحل الجنوبي', desert: 'الصحراء الغربية', airport: 'مطار الحرية' };
+    showToastMessage(`DESTINATION · ${regionNames[region] || 'CITY CIRCUIT'}`);
+  }
+
+  function selectLevel(level) {
+    selectRegion(level);
+    closeWorldMap();
+    if (!started) startSession();
+    resetCar(false);
+    showToastMessage(`LEVEL LOADED · ${String(level).toUpperCase()} LOOP`);
+  }
+
   function startSession() {
     if (started) {
       ui.startOverlay.classList.add('hidden');
@@ -1344,10 +1566,12 @@
     }
     if (value && !event.repeat) {
       if (code === 'Enter' && (!started || !ui.startOverlay.classList.contains('hidden'))) startSession();
-      if (code === 'KeyP' || code === 'Escape') togglePause();
+      if (code === 'Escape' && !ui.worldOverlay.classList.contains('hidden')) closeWorldMap();
+      else if (code === 'KeyP' || code === 'Escape') togglePause();
       if (code === 'KeyR') resetCar(true);
       if (code === 'KeyM') toggleMute();
       if (code === 'KeyC') cycleCamera();
+      if (code === 'KeyL') openWorldMap();
     }
   }
 
@@ -1387,9 +1611,27 @@
 
   ui.startButton.addEventListener('click', startSession);
   ui.guideButton.addEventListener('click', openGuide);
+  ui.worldButton.addEventListener('click', openWorldMap);
+  ui.worldLaunchButton.addEventListener('click', openWorldMap);
+  ui.worldCloseButton.addEventListener('click', closeWorldMap);
   document.querySelectorAll('[data-camera]').forEach((button) => {
     button.addEventListener('click', () => setCamera(button.dataset.camera));
   });
+  document.querySelectorAll('[data-region]').forEach((label) => {
+    label.addEventListener('click', () => selectRegion(label.dataset.region));
+  });
+  document.querySelectorAll('[data-level]').forEach((button) => {
+    button.addEventListener('click', () => selectLevel(button.dataset.level));
+  });
+  document.querySelectorAll('[data-world-tab]').forEach((button) => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('[data-world-tab]').forEach((tab) => tab.classList.toggle('active', tab === button));
+      showToastMessage(`WORLD HUB · ${button.querySelector('span').textContent}`);
+    });
+  });
+  const worldZoomButtons = document.querySelectorAll('.map-zoom button');
+  if (worldZoomButtons[0]) worldZoomButtons[0].addEventListener('click', () => { worldMapZoom = clamp(worldMapZoom + .08, .88, 1.3); drawWorldMap(); });
+  if (worldZoomButtons[1]) worldZoomButtons[1].addEventListener('click', () => { worldMapZoom = clamp(worldMapZoom - .08, .88, 1.3); drawWorldMap(); });
   ui.pauseButton.addEventListener('click', () => togglePause());
   ui.resumeButton.addEventListener('click', () => togglePause(false));
   ui.resetButton.addEventListener('click', () => resetCar(true));
