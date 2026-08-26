@@ -1424,7 +1424,12 @@
   }
 
   function openGuide() {
-    if (!started) return;
+    if (!started) {
+      ui.worldOverlay.classList.add('hidden');
+      ui.worldOverlay.setAttribute('aria-hidden', 'true');
+      ui.startOverlay.classList.remove('hidden');
+      return;
+    }
     togglePause(true);
     ui.startButton.querySelector('span:nth-child(2)').textContent = 'RESUME DRIVE';
     ui.startOverlay.classList.remove('hidden');
@@ -1432,6 +1437,7 @@
 
   function openWorldMap() {
     worldWasRunning = started && !paused && !state.finished;
+    if (!started) ui.startOverlay.classList.add('hidden');
     if (started) togglePause(true);
     ui.worldOverlay.classList.remove('hidden');
     ui.worldOverlay.setAttribute('aria-hidden', 'false');
@@ -1441,6 +1447,7 @@
   function closeWorldMap() {
     ui.worldOverlay.classList.add('hidden');
     ui.worldOverlay.setAttribute('aria-hidden', 'true');
+    if (!started) ui.startOverlay.classList.remove('hidden');
     if (worldWasRunning) togglePause(false);
     worldWasRunning = false;
   }
@@ -1643,5 +1650,6 @@
   resetCar(false);
   setupInput();
   updateHUD(performance.now());
+  openWorldMap();
   requestAnimationFrame(animate);
 })();

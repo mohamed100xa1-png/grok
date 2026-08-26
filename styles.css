@@ -779,3 +779,20 @@ button { font: inherit; }
   .region-desert { bottom: 20%; right: 9%; }
   .region-airport { bottom: 4%; right: 39%; }
 }
+
+/* The generated aerial island is the hero art for the level selector; canvas
+   overlays keep markers and selection state interactive. */
+.world-map-frame { background-image: linear-gradient(180deg, rgba(3, 10, 15, .04), rgba(3, 10, 15, .3)), url('assets/open-world-map.jpg'); background-size: cover; background-position: center; }
+#worldMapCanvas { position: absolute; inset: 0; opacity: .25; mix-blend-mode: screen; }
+
+/* Realistic character key art generated for the open-world profile cards. */
+.character-photo { background-size: cover; background-repeat: no-repeat; background-position: center 30%; }
+.character-photo::before { inset: 0; right: auto; bottom: auto; width: auto; height: auto; border: 0; border-radius: 0; transform: none; background: linear-gradient(180deg, rgba(3, 8, 13, .08) 18%, rgba(3, 8, 12, .02) 48%, rgba(4, 8, 11, .82) 100%); box-shadow: none; }
+.character-photo::after { inset: 0; top: auto; right: auto; width: auto; height: auto; border: 0; border-radius: 0; transform: none; background: linear-gradient(90deg, rgba(3, 7, 10, .68), transparent 58%); box-shadow: none; }
+.character-silhouette, .character-photo .car-shadow { display: none; }
+.photo-karim { background-image: url('assets/character-karim.jpg'); }
+.photo-laila { background-image: url('assets/character-laila.jpg'); }
+.photo-salem { background-image: url('assets/character-salem.jpg'); }
+.photo-fahad { background-image: url('assets/character-fahad.jpg'); background-position: center 34%; }
+.photo-noura { background-image: url('assets/character-noura.jpg'); }
+.photo-ahmed { background-image: url('assets/character-ahmed.jpg'); }
