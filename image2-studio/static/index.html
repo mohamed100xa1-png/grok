@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT Image 2 Studio - استوديو توليد الصور</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        tajawal: ['Tajawal', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#0a0a0b] text-white font-tajawal min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-white/10 bg-black/50 backdrop-blur-xl sticky top-0 z-50">
+        <div class="max-w-[1600px] mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-lg">G2</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-none">GPT Image 2 Studio</h1>
+                    <p class="text-xs text-white/50 mt-1">مبني على wuyoscar/GPT-Image2-Skill</p>
+                </div>
+                <span class="hidden md:inline-flex ml-4 px-2.5 py-1 rounded-full bg-white/10 text-[11px] border border-white/10">SKILL • CLI • GALLERY</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="langToggle" class="px-3 py-1.5 rounded-full bg-white text-black text-sm font-medium">EN / AR</button>
+                <a href="https://github.com/wuyoscar/GPT-Image2-Skill" target="_blank" class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-sm border border-white/10">GitHub</a>
+                <div id="apiStatus" class="w-2 h-2 rounded-full bg-yellow-500 ml-2" title="Checking API"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-[1600px] mx-auto flex flex-col lg:flex-row min-h-[calc(100vh-65px)]">
+        <!-- Left Sidebar - Gallery -->
+        <aside class="w-full lg:w-[380px] border-b lg:border-b-0 lg:border-l border-white/10 bg-[#111113] lg:sticky lg:top-[65px] lg:h-[calc(100vh-65px)] lg:overflow-y-auto">
+            <div class="p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="font-bold text-[13px] tracking-widest text-white/60 uppercase">Prompt Library • مكتبة البرومبت</h2>
+                    <span id="galleryCount" class="text-xs bg-white/10 px-2 py-0.5 rounded-full">162</span>
+                </div>
+                
+                <!-- Search -->
+                <div class="relative mb-4">
+                    <input id="gallerySearch" type="text" placeholder="ابحث... anime, poster, UI, photography" class="w-full bg-white/[0.06] border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-sm placeholder:text-white/30 focus:outline-none focus:border-violet-500/50 focus:bg-white/[0.08]">
+                    <span class="absolute right-3 top-2.5 text-white/30">🔍</span>
+                </div>
+
+                <!-- Categories -->
+                <div id="categoryList" class="flex flex-wrap gap-1.5 mb-5 max-h-[120px] overflow-y-auto">
+                    <!-- injected -->
+                </div>
+
+                <!-- Craft Guide Mini -->
+                <div class="mb-6 rounded-xl bg-gradient-to-br from-violet-600/20 to-indigo-600/20 border border-violet-500/20 p-4">
+                    <h3 class="font-bold text-sm mb-2">🎯 دليل الصياغة Craft.md</h3>
+                    <ul class="text-xs text-white/70 space-y-1.5 leading-relaxed">
+                        <li>• حدد النمط + الموضوع + الإضاءة + اللوحة</li>
+                        <li>• للنصوص: اذكر النص الحرفي + الخط + التراتبية</li>
+                        <li>• للـ Edit: اذكر ما يتغير وما يبقى ثابت</li>
+                        <li>• استخدم low للمسودات، high للنهائي</li>
+                    </ul>
+                    <button id="openCraft" class="mt-3 text-xs underline text-violet-300 hover:text-violet-200">فتح الدليل الكامل</button>
+                </div>
+
+                <!-- Gallery Items -->
+                <div id="galleryItems" class="space-y-3">
+                    <div class="text-center py-8 text-white/40 text-sm">جاري تحميل المعرض...</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center - Generation Studio -->
+        <main class="flex-1 bg-[#0a0a0b] min-w-0">
+            <div class="p-4 md:p-8 max-w-[900px] mx-auto">
+                <!-- Title -->
+                <div class="mb-8">
+                    <h2 class="text-3xl md:text-4xl font-extrabold leading-tight">صمم صورك بـ <span class="bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">GPT Image 2</span></h2>
+                    <p class="text-white/50 mt-3 text-sm md:text-base">استخدم نفس منطق الـ Skill: Classify → Search References → Craft → Execute via CLI</p>
+                </div>
+
+                <!-- Example Tiger Gallery -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-bold">🐅 أمثلة مصغرة - نمر يمشي في الغابة</h3>
+                        <span class="text-[11px] px-2 py-1 rounded-full bg-violet-600">GPT Image 2 Generated</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] group cursor-pointer hover:border-violet-500/30 transition">
+                            <div class="aspect-square relative bg-black">
+                                <img src="/static/tiger-forest-thumbnail.jpg" alt="Tiger thumbnail photorealistic" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <span class="absolute top-2 left-2 px-2 py-1 rounded-full bg-white/90 text-black text-[10px] font-bold">THUMBNAIL • 1K • HIGH</span>
+                            </div>
+                            <div class="p-3">
+                                <p class="text-xs font-bold">Photorealistic</p>
+                                <p class="text-[11px] text-white/40 mt-1">نمر واقعي • National Geographic style</p>
+                            </div>
+                        </div>
+                        <div class="rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] group cursor-pointer hover:border-violet-500/30 transition">
+                            <div class="aspect-square relative bg-black">
+                                <img src="/static/tiger-forest-cinematic.jpg" alt="Tiger cinematic" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <span class="absolute top-2 left-2 px-2 py-1 rounded-full bg-white/90 text-black text-[10px] font-bold">CINEMATIC • LANDSCAPE</span>
+                            </div>
+                            <div class="p-3">
+                                <p class="text-xs font-bold">Cinematic Wide</p>
+                                <p class="text-[11px] text-white/40 mt-1">لقطة سينمائية • ضباب و أشعة شمس</p>
+                            </div>
+                        </div>
+                        <div class="rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] group cursor-pointer hover:border-violet-500/30 transition">
+                            <div class="aspect-square relative bg-black">
+                                <img src="/static/tiger-forest-anime.jpg" alt="Tiger anime" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <span class="absolute top-2 left-2 px-2 py-1 rounded-full bg-white/90 text-black text-[10px] font-bold">ANIME • GHIBLI</span>
+                            </div>
+                            <div class="p-3">
+                                <p class="text-xs font-bold">Anime Ghibli</p>
+                                <p class="text-[11px] text-white/40 mt-1">أنمي كيوت • Studio Ghibli</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 rounded-xl bg-white/[0.03] border border-white/5 p-3 text-[11px] text-white/50">
+                        <span class="text-white font-bold">البرومبت المستخدم للصورة الرئيسية:</span> Photorealistic thumbnail of a majestic Bengal tiger walking gracefully through a lush green forest, morning sunlight filtering through tall trees creating soft light rays, cinematic lighting, shallow depth of field, highly detailed fur texture, mossy ground, dense foliage background, shot on Canon EOS R5 with 85mm lens, National Geographic wildlife photography style, ultra-detailed, 4K
+                        <br><span class="text-violet-300">Flags:</span> --size 1k --quality high --format jpeg --model gpt-image-2
+                    </div>
+                </div>
+
+                <!-- Prompt Area -->
+                <div class="rounded-[20px] border border-white/10 bg-[#141416] p-5 md:p-6 shadow-2xl">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="text-sm font-bold">البرومبت / Prompt *</label>
+                        <div class="flex gap-2">
+                            <button id="enhancePrompt" class="text-xs px-2.5 py-1 rounded-full bg-violet-600 hover:bg-violet-500">✨ تحسين</button>
+                            <span id="charCount" class="text-xs text-white/40">0 حرف</span>
+                        </div>
+                    </div>
+                    <textarea id="promptInput" rows="5" placeholder="مثال: Photorealistic tiger walking in misty forest, morning light rays, ultra detailed fur, National Geographic style, 85mm lens...
+
+أو بالعربي: نمر بنغالي مهيب يمشي في غابة خضراء كثيفة، أشعة الشمس الصباحية تتسلل بين الأشجار..." class="w-full bg-black/50 border border-white/10 rounded-xl p-4 text-sm leading-relaxed placeholder:text-white/20 focus:outline-none focus:border-violet-500/50 resize-none"></textarea>
+
+                    <!-- Quick Prompts -->
+                    <div class="mt-3 flex flex-wrap gap-1.5">
+                        <button class="quick-prompt px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-[12px]" data-prompt="Photorealistic tiger walking through dense green forest, morning sunlight filtering, cinematic, ultra detailed fur, National Geographic">🐅 نمر في الغابة</button>
+                        <button class="quick-prompt px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-[12px]" data-prompt="A cute anime tiger cub, Studio Ghibli style, soft lighting, forest background, kawaii">🎌 أنمي نمر</button>
+                        <button class="quick-prompt px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-[12px]" data-prompt="Minimalist logo of tiger walking, flat design, vector, strong silhouette, balanced negative space, plain background">🎨 لوجو نمر</button>
+                        <button class="quick-prompt px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-[12px]" data-prompt="Cinematic poster of tiger in forest, title 'THE JUNGLE KING' in bold serif, tagline, dramatic lighting">🎬 بوستر نمر</button>
+                    </div>
+
+                    <!-- Size & Quality -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
+                        <div>
+                            <label class="text-xs font-bold text-white/60 uppercase tracking-widest mb-2 block">الحجم Size</label>
+                            <div class="grid grid-cols-4 gap-1.5">
+                                <button data-size="1k" class="size-btn active px-2 py-2.5 rounded-xl bg-white text-black text-xs font-bold border">1K مربع</button>
+                                <button data-size="portrait" class="size-btn px-2 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs">Portrait</button>
+                                <button data-size="landscape" class="size-btn px-2 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs">Landscape</button>
+                                <button data-size="2k" class="size-btn px-2 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs">2K طباعة</button>
+                                <button data-size="square" class="size-btn px-2 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs">Square</button>
+                                <button data-size="wide" class="size-btn px-2 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs">Wide 16:9</button>
+                                <button data-size="tall" class="size-btn px-2 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs">Tall 9:16</button>
+                                <button data-size="4k" class="size-btn px-2 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs">4K Hero</button>
+                            </div>
+                            <input id="customSize" type="text" placeholder="مخصص: 1024x1536" class="mt-2 w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-xs placeholder:text-white/20">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-white/60 uppercase tracking-widest mb-2 block">الجودة Quality • الميزانية</label>
+                            <div class="space-y-2">
+                                <button data-quality="low" class="quality-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-left">
+                                    <span class="text-sm">Low • مسودة رخيصة</span><span class="text-xs text-white/40">$</span>
+                                </button>
+                                <button data-quality="medium" class="quality-btn w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-left">
+                                    <span class="text-sm">Medium • استكشاف متوازن</span><span class="text-xs text-white/40">$$</span>
+                                </button>
+                                <button data-quality="high" class="quality-btn active w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white text-black text-left font-bold">
+                                    <span class="text-sm">High • نهائي للنشر</span><span class="text-xs">$$$ • موصى</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced -->
+                    <details class="mt-6 group">
+                        <summary class="list-none flex items-center justify-between cursor-pointer py-2 border-t border-white/10">
+                            <span class="text-xs font-bold text-white/60 uppercase tracking-widest">إعدادات متقدمة Advanced</span>
+                            <span class="text-white/40 group-open:rotate-180 transition">▼</span>
+                        </summary>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+                            <div>
+                                <label class="text-[11px] text-white/50">عدد الصور N</label>
+                                <select id="nSelect" class="w-full mt-1 bg-black/50 border border-white/10 rounded-lg px-2 py-2 text-sm">
+                                    <option value="1">1</option><option value="2">2</option><option value="4">4</option><option value="8">8</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-[11px] text-white/50">الخلفية Background</label>
+                                <select id="bgSelect" class="w-full mt-1 bg-black/50 border border-white/10 rounded-lg px-2 py-2 text-sm">
+                                    <option value="">auto</option><option value="opaque">opaque</option><option value="transparent">transparent</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-[11px] text-white/50">Moderation</label>
+                                <select id="modSelect" class="w-full mt-1 bg-black/50 border border-white/10 rounded-lg px-2 py-2 text-sm">
+                                    <option value="low">low (مرن)</option><option value="auto">auto (صارم)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-[11px] text-white/50">الصيغة Format</label>
+                                <select id="formatSelect" class="w-full mt-1 bg-black/50 border border-white/10 rounded-lg px-2 py-2 text-sm">
+                                    <option value="png">png</option><option value="jpeg">jpeg</option><option value="webp">webp</option>
+                                </select>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Reference Images -->
+                    <div class="mt-6">
+                        <label class="text-xs font-bold text-white/60 uppercase tracking-widest mb-2 block">صور مرجعية للتعديل (Edit) • اختياري</label>
+                        <div id="dropZone" class="border-2 border-dashed border-white/10 rounded-xl p-6 text-center hover:border-violet-500/30 hover:bg-violet-500/5 transition cursor-pointer">
+                            <div class="text-2xl mb-2">🖼️</div>
+                            <p class="text-sm text-white/60">اسحب الصور هنا أو اضغط للاختيار</p>
+                            <p class="text-[11px] text-white/30 mt-1">يدعم multi-reference: الصورة 1 + الصورة 2 • وجود -i يفعل /v1/images/edits</p>
+                            <input id="imageInput" type="file" multiple accept="image/*" class="hidden">
+                        </div>
+                        <div id="imagePreview" class="mt-3 flex flex-wrap gap-2"></div>
+                        
+                        <div class="mt-3">
+                            <label class="text-[11px] text-white/50">قناع Mask للـ Inpaint (شفاف = إعادة توليد، معتم = حفظ)</label>
+                            <input id="maskInput" type="file" accept="image/png" class="mt-1 w-full text-xs file:mr-2 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:bg-white/10 file:text-white hover:file:bg-white/20">
+                        </div>
+                    </div>
+
+                    <!-- Generate -->
+                    <button id="generateBtn" class="w-full mt-8 py-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 font-bold text-base shadow-lg shadow-violet-600/20 transition flex items-center justify-center gap-2">
+                        <span>🚀 توليد الآن Generate</span>
+                        <span id="genSpinner" class="hidden animate-spin">⏳</span>
+                    </button>
+                    <p class="text-[11px] text-center text-white/30 mt-2">يستخدم <code>client.images.generate</code> أو <code>client.images.edit</code> حسب وجود صور مرجعية • gpt-image-2</p>
+                </div>
+
+                <!-- Endpoint Info -->
+                <div class="mt-6 rounded-xl border border-white/10 bg-white/[0.02] p-4 flex gap-3 text-xs">
+                    <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">ℹ️</div>
+                    <div class="text-white/60 leading-relaxed">
+                        <span class="text-white font-bold">كيف يعمل حسب الـ Skill:</span> إذا لم ترفع صور → <code class="bg-white/10 px-1 rounded">/v1/images/generations</code>، إذا رفعت صورة واحدة أو أكثر → <code class="bg-white/10 px-1 rounded">/v1/images/edits</code> مع <code>-i</code>، ومع قناع → inpaint حيث الشفاف يُعاد توليده. الجودة high للنصوص الكثيفة والبوسترات.
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right - Results -->
+        <aside class="w-full lg:w-[420px] border-t lg:border-t-0 lg:border-r border-white/10 bg-[#111113] lg:sticky lg:top-[65px] lg:h-[calc(100vh-65px)] lg:overflow-y-auto">
+            <div class="p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="font-bold text-[13px] tracking-widest text-white/60 uppercase">النتائج • Results</h2>
+                    <button id="clearResults" class="text-xs text-white/40 hover:text-white">مسح</button>
+                </div>
+                
+                <div id="resultsGrid" class="space-y-4">
+                    <div class="rounded-2xl border border-dashed border-white/10 p-8 text-center">
+                        <div class="text-3xl mb-3">✨</div>
+                        <p class="text-sm text-white/50">الصور المولدة ستظهر هنا</p>
+                        <p class="text-xs text-white/30 mt-1">ادخل برومبت واضغط توليد</p>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <h3 class="font-bold text-xs tracking-widest text-white/40 uppercase mb-3">السجل المحلي History</h3>
+                    <div id="historyList" class="space-y-2 text-xs text-white/40">
+                        <p>لا يوجد سجل بعد</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Craft Modal -->
+    <div id="craftModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] hidden items-center justify-center p-4">
+        <div class="bg-[#1a1a1e] border border-white/10 rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+            <div class="p-5 border-b border-white/10 flex items-center justify-between">
+                <h3 class="font-bold">📖 دليل الصياغة الكامل craft.md</h3>
+                <button id="closeCraft" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20">✕</button>
+            </div>
+            <div id="craftContent" class="p-6 overflow-y-auto text-sm leading-relaxed text-white/70 whitespace-pre-wrap">جاري التحميل...</div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white text-black px-4 py-2 rounded-full text-sm font-medium shadow-xl hidden z-[200]"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

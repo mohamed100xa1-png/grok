@@ -1,0 +1,57 @@
+/* GPT Image 2 Studio - Extra styles */
+* { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 999px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+.size-btn.active, .quality-btn.active {
+    background: white !important;
+    color: black !important;
+    border-color: white !important;
+    font-weight: 700;
+}
+
+#galleryItems .gallery-card {
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    border-radius: 16px;
+    padding: 12px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+#galleryItems .gallery-card:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(139,92,246,0.3);
+    transform: translateY(-1px);
+}
+.gallery-card .prompt-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.6);
+}
+
+.result-card {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: #141416;
+}
+.result-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+[dir="ltr"] { font-family: Inter, sans-serif; }
+[dir="rtl"] { font-family: Tajawal, sans-serif; }
+
+@keyframes pulse-violet {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.4); }
+    50% { box-shadow: 0 0 0 12px rgba(124,58,237,0); }
+}
+#apiStatus.online { background: #22c55e; animation: pulse-violet 2s infinite; }
+#apiStatus.offline { background: #ef4444; }
