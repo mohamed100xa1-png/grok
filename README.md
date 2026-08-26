@@ -21,9 +21,28 @@ race, with region selection, generated map art, player profiles, activities, fri
 cards based on the supplied world-map reference.
 
 ```bash
-python3 -m http.server 4173 --bind 0.0.0.0
+python3 serve.py --port 4173
 ```
 
-Open `http://localhost:4173` and select **START ENGINE**. Drive with `W A S D` or the arrow keys,
-use `Shift` for nitro, `Space` for the handbrake, `C` to change camera, `P` or `Esc` to pause,
-and `R` to reset the car.
+Open `http://localhost:4173` and select a level from the world map. Drive with `W A S D` or the
+arrow keys, use `Shift` for nitro, `Space` for the handbrake, `C` to change camera, `P` or `Esc` to
+pause, and `R` to reset the car.
+
+### Optional Matrix-Game 3 integration
+
+The game includes a same-origin bridge to the official [SkyworkAI/Matrix-Game](https://github.com/SkyworkAI/Matrix-Game)
+repository. It is optional because Matrix-Game 3.0 needs its separate model checkpoint, Linux, and a
+CUDA/NVIDIA GPU. Without those, the browser keeps using the local map and renderer.
+
+```bash
+# clone the upstream source next to this checkout
+ git clone https://github.com/SkyworkAI/Matrix-Game.git ../Matrix-Game
+# point the bridge at Matrix-Game-3 and its downloaded checkpoint
+export MATRIX_GAME_ROOT="$PWD/../Matrix-Game/Matrix-Game-3"
+export MATRIX_GAME_CHECKPOINT="$HOME/models/Matrix-Game-3.0"
+python3 serve.py --port 4173
+```
+
+The **MATRIX WORLD MODEL** button on the level hub requests a cinematic region preview. The bridge
+runs generation in a background process, serves the resulting MP4 back to the same UI, and falls
+back cleanly when the model is not configured.

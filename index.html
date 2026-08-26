@@ -224,6 +224,11 @@
           </aside>
 
           <section class="world-map-section" aria-label="Open world map">
+            <div class="matrix-toolbar">
+              <div class="matrix-brand"><span class="matrix-orb"></span><div><strong>MATRIX WORLD MODEL</strong><small id="matrixStatus">LOCAL FALLBACK · READY</small></div></div>
+              <div class="matrix-actions"><a href="https://github.com/SkyworkAI/Matrix-Game" target="_blank" rel="noreferrer">SOURCE ↗</a><button id="matrixGenerateButton" type="button">GENERATE REGION PREVIEW</button></div>
+            </div>
+            <div class="matrix-preview" id="matrixPreview" aria-hidden="true"><button id="matrixPreviewClose" type="button" aria-label="Close Matrix preview">×</button><div><span>MATRIX-GAME / GENERATED SCENE</span><strong id="matrixPreviewTitle">CITY CIRCUIT</strong></div><video id="matrixVideo" controls playsinline></video></div>
             <div class="world-map-frame">
               <canvas id="worldMapCanvas" aria-label="Open world map"></canvas>
               <div class="map-region region-mountains" data-region="mountains"><span>♠</span> الجبال الشمالية</div>

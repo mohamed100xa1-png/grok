@@ -16,6 +16,12 @@
     worldLaunchButton: document.getElementById('worldLaunchButton'),
     worldOverlay: document.getElementById('worldOverlay'),
     worldCloseButton: document.getElementById('worldCloseButton'),
+    matrixStatus: document.getElementById('matrixStatus'),
+    matrixGenerateButton: document.getElementById('matrixGenerateButton'),
+    matrixPreview: document.getElementById('matrixPreview'),
+    matrixPreviewClose: document.getElementById('matrixPreviewClose'),
+    matrixPreviewTitle: document.getElementById('matrixPreviewTitle'),
+    matrixVideo: document.getElementById('matrixVideo'),
     pauseOverlay: document.getElementById('pauseOverlay'),
     pauseButton: document.getElementById('pauseButton'),
     resumeButton: document.getElementById('resumeButton'),
@@ -71,6 +77,7 @@
   let paused = false;
   let muted = false;
   let worldWasRunning = false;
+  let matrixJobTimer = null;
   let toastTimer = null;
   let lastFrame = performance.now();
   let lastHudUpdate = 0;
@@ -1441,6 +1448,7 @@
     if (started) togglePause(true);
     ui.worldOverlay.classList.remove('hidden');
     ui.worldOverlay.setAttribute('aria-hidden', 'false');
+    syncMatrixStatus();
     drawWorldMap();
   }
 
@@ -1466,6 +1474,96 @@
     if (!started) startSession();
     resetCar(false);
     showToastMessage(`LEVEL LOADED · ${String(level).toUpperCase()} LOOP`);
+  }
+
+  function setMatrixStatus(text, state = 'offline') {
+    ui.matrixStatus.textContent = text;
+    ui.matrixStatus.dataset.state = state;
+  }
+
+  async function syncMatrixStatus() {
+    try {
+      const response = await fetch('/api/matrix/status', { cache: 'no-store' });
+      if (!response.ok) throw new Error('bridge unavailable');
+      const data = await response.json();
+      if (data.ready) setMatrixStatus('CONNECTED · READY', 'ready');
+      else setMatrixStatus('LOCAL FALLBACK · READY', 'offline');
+    } catch (error) {
+      setMatrixStatus('LOCAL FALLBACK · READY', 'offline');
+    }
+  }
+
+  async function generateMatrixPreview() {
+    const region = selectedRegion;
+    const button = ui.matrixGenerateButton;
+    button.disabled = true;
+    button.textContent = 'CONNECTING TO MATRIX...';
+    setMatrixStatus('REQUESTING SCENE...', 'loading');
+    const prompts = {
+      city: 'A realistic cinematic street-racing scene in the downtown loop at dusk, black performance car, wet asphalt, neon reflections, dense towers, dynamic chase camera.',
+      mountains: 'A realistic cinematic driving scene on an alpine road, snow peaks, guardrails, black performance car, golden light, dynamic chase camera.',
+      forest: 'A realistic cinematic forest highway race, mist, wet road, tall trees, black performance car, dynamic chase camera.',
+      lakes: 'A realistic cinematic road beside a blue mountain lake, pine trees, sunset, black performance car, dynamic chase camera.',
+      industry: 'A realistic cinematic industrial district race, warehouses, cranes, sodium lights, black performance car, dynamic chase camera.',
+      coast: 'A realistic cinematic coastal highway, ocean cliffs, warm light, black performance car, dynamic chase camera.',
+      desert: 'A realistic cinematic desert pursuit, red rock, dust and sunset, black performance car, dynamic chase camera.',
+      airport: 'A realistic cinematic night race around an airport, runway lights, rain-slick road, black performance car, dynamic chase camera.'
+    };
+    try {
+      const response = await fetch('/api/matrix/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ region, prompt: prompts[region] || prompts.city, image: 'assets/open-world-map.jpg' })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Matrix-Game is not configured');
+      setMatrixStatus('GENERATING · 0%', 'loading');
+      showToastMessage('MATRIX-GAME · SCENE GENERATION STARTED');
+      pollMatrixJob(data.id, region, 0);
+    } catch (error) {
+      setMatrixStatus('LOCAL FALLBACK · READY', 'offline');
+      showToastMessage('MATRIX OFFLINE · LOCAL WORLD MODEL ACTIVE');
+      button.disabled = false;
+      button.textContent = 'GENERATE REGION PREVIEW';
+    }
+  }
+
+  async function pollMatrixJob(jobId, region, attempts) {
+    try {
+      const response = await fetch(`/api/matrix/jobs/${encodeURIComponent(jobId)}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error('job unavailable');
+      const job = await response.json();
+      if (job.status === 'completed' && job.output_url) {
+        ui.matrixVideo.src = job.output_url;
+        ui.matrixPreviewTitle.textContent = region.toUpperCase() + ' / MATRIX-GAME 3.0';
+        ui.matrixPreview.classList.add('visible');
+        ui.matrixPreview.setAttribute('aria-hidden', 'false');
+        setMatrixStatus('CONNECTED · SCENE READY', 'ready');
+        ui.matrixGenerateButton.disabled = false;
+        ui.matrixGenerateButton.textContent = 'GENERATE REGION PREVIEW';
+        showToastMessage('MATRIX-GAME · CINEMATIC SCENE READY');
+        return;
+      }
+      if (job.status === 'failed') throw new Error('generation failed');
+      const elapsed = Math.min(99, Math.round((attempts + 1) / 2));
+      setMatrixStatus(`GENERATING · ${elapsed}%`, 'loading');
+      if (attempts < 240) matrixJobTimer = setTimeout(() => pollMatrixJob(jobId, region, attempts + 1), 1500);
+      else throw new Error('generation timeout');
+    } catch (error) {
+      setMatrixStatus('LOCAL FALLBACK · READY', 'offline');
+      ui.matrixGenerateButton.disabled = false;
+      ui.matrixGenerateButton.textContent = 'GENERATE REGION PREVIEW';
+      showToastMessage('MATRIX GENERATION FAILED · LOCAL SCENE ACTIVE');
+    }
+  }
+
+  function closeMatrixPreview() {
+    clearTimeout(matrixJobTimer);
+    ui.matrixVideo.pause();
+    ui.matrixVideo.removeAttribute('src');
+    ui.matrixVideo.load();
+    ui.matrixPreview.classList.remove('visible');
+    ui.matrixPreview.setAttribute('aria-hidden', 'true');
   }
 
   function startSession() {
@@ -1621,6 +1719,8 @@
   ui.worldButton.addEventListener('click', openWorldMap);
   ui.worldLaunchButton.addEventListener('click', openWorldMap);
   ui.worldCloseButton.addEventListener('click', closeWorldMap);
+  ui.matrixGenerateButton.addEventListener('click', generateMatrixPreview);
+  ui.matrixPreviewClose.addEventListener('click', closeMatrixPreview);
   document.querySelectorAll('[data-camera]').forEach((button) => {
     button.addEventListener('click', () => setCamera(button.dataset.camera));
   });
