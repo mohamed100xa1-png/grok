@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080c10" />
+  <title>Apex Drive — Hillside Pass</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="sim-shell" aria-label="Apex Drive car simulation">
+    <canvas id="gameCanvas" aria-label="Driving simulation view"></canvas>
+    <div class="screen-grain" aria-hidden="true"></div>
+    <div class="screen-vignette" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand-lockup">
+        <div class="brand-emblem" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <div>
+          <div class="micro-label">MOTORSPORT / SIMULATION</div>
+          <div class="brand-name">APEX<span>DRIVE</span></div>
+        </div>
+      </div>
+
+      <div class="session-status">
+        <span class="status-dot"></span>
+        <span id="sessionStatus">STANDBY</span>
+        <span class="status-divider"></span>
+        <span id="sessionClock">17:42:08</span>
+      </div>
+
+      <div class="top-actions">
+        <button class="icon-button" id="soundButton" type="button" aria-label="Mute engine audio" title="Mute engine audio">
+          <svg class="sound-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.5-.7a5 5 0 0 1 0 7.4M18.7 5.8a9.5 9.5 0 0 1 0 12.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="sound-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm14 1-4 4m0-4 4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-button" id="pauseButton" type="button" aria-label="Pause simulation" title="Pause simulation">
+          <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <aside class="left-rail">
+      <section class="glass-panel route-panel">
+        <div class="panel-kicker"><span class="kicker-line"></span> CURRENT SESSION</div>
+        <div class="route-heading">
+          <div>
+            <h1>Hillside Pass</h1>
+            <p>North loop · Sector 03</p>
+          </div>
+          <div class="route-badge">RWD</div>
+        </div>
+        <div class="route-meta">
+          <div><span class="meta-icon">↗</span><span>4.8 <small>KM</small></span></div>
+          <div><span class="meta-icon">◷</span><span>DRY <small>ASPHALT</small></span></div>
+        </div>
+        <div class="progress-label"><span>ROUTE PROGRESS</span><span id="routeProgressLabel">00%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="routeProgress"></div></div>
+      </section>
+
+      <section class="glass-panel map-panel">
+        <div class="panel-heading">
+          <div><span class="panel-kicker"><span class="kicker-line"></span> LIVE MAP</span><strong>HILLSIDE PASS</strong></div>
+          <span class="map-north">N</span>
+        </div>
+        <div class="map-wrap">
+          <canvas id="mapCanvas" aria-label="Live track map"></canvas>
+          <span class="map-coordinate" id="mapCoordinate">46° 08′ N / 7° 14′ E</span>
+        </div>
+        <div class="map-footer"><span><i class="legend-dot player"></i> YOU</span><span><i class="legend-line"></i> TRACK</span><span>1 / 3 LAPS</span></div>
+      </section>
+
+      <section class="glass-panel tip-panel">
+        <div class="tip-icon">i</div>
+        <div><strong>Find the line.</strong><span>Brake before the apex, then feed in the throttle.</span></div>
+      </section>
+    </aside>
+
+    <aside class="right-rail">
+      <section class="glass-panel telemetry-panel">
+        <div class="telemetry-topline">
+          <span class="panel-kicker"><span class="kicker-line"></span> VEHICLE TELEMETRY</span>
+          <span class="telemetry-live"><i></i> LIVE</span>
+        </div>
+        <div class="speed-row">
+          <div class="speed-value" id="speedValue">000</div>
+          <div class="speed-unit">KM/H</div>
+        </div>
+        <div class="gear-row">
+          <div class="gear-label">GEAR</div>
+          <div class="gear-value" id="gearValue">P</div>
+          <div class="gear-stack" aria-label="Gear selection"><span class="active">1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+        </div>
+        <div class="rpm-block">
+          <div class="rpm-label"><span>ENGINE LOAD</span><span id="rpmValue">0.9k RPM</span></div>
+          <div class="rpm-track"><div class="rpm-fill" id="rpmFill"></div><div class="rpm-redline"></div></div>
+          <div class="rpm-scale"><span>0</span><span>3</span><span>6</span><span>9K</span></div>
+        </div>
+        <div class="telemetry-divider"></div>
+        <div class="telemetry-grid">
+          <div class="metric"><span class="metric-label">LAP</span><strong id="lapValue">01 / 03</strong></div>
+          <div class="metric"><span class="metric-label">LAP TIME</span><strong id="lapTime">00:00.000</strong></div>
+          <div class="metric"><span class="metric-label">BEST</span><strong id="bestTime">— — : — —</strong></div>
+          <div class="metric"><span class="metric-label">DISTANCE</span><strong id="distanceValue">0.00 <em>KM</em></strong></div>
+        </div>
+        <div class="telemetry-divider"></div>
+        <div class="vehicle-systems">
+          <div class="system-row"><span><i class="system-dot green"></i> TRACTION</span><strong id="tractionValue">100%</strong></div>
+          <div class="system-row"><span><i class="system-dot amber"></i> TIRE TEMP</span><strong id="tireValue">72°</strong></div>
+          <div class="system-row"><span><i class="system-dot blue"></i> G-FORCE</span><strong id="gForceValue">0.00 G</strong></div>
+        </div>
+      </section>
+
+      <section class="glass-panel corner-panel">
+        <div class="corner-top"><span class="panel-kicker"><span class="kicker-line"></span> APPROACHING</span><span class="corner-distance" id="cornerDistance">NEXT</span></div>
+        <strong id="cornerName">START / FINISH</strong>
+        <div class="corner-bar"><span id="cornerBar"></span></div>
+        <div class="corner-note" id="cornerNote">Build speed on the straight</div>
+      </section>
+    </aside>
+
+    <footer class="bottom-ui">
+      <div class="drive-state"><span class="state-light"></span><strong id="driveState">PARKED</strong><span class="state-divider"></span><span id="surfaceState">READY FOR SESSION</span></div>
+      <div class="control-hint"><span class="key key-wide">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span><span>DRIVE</span><span class="hint-separator"></span><span class="key key-wide">SPACE</span><span>HANDBRAKE</span></div>
+      <button class="reset-button" id="resetButton" type="button"><span>↻</span> RESET CAR <small>R</small></button>
+    </footer>
+
+    <section class="start-overlay" id="startOverlay">
+      <div class="start-glow" aria-hidden="true"></div>
+      <div class="start-card">
+        <div class="start-eyebrow"><span></span> APEX DRIVE / SESSION 01</div>
+        <h2>Own the<br /><em>apex.</em></h2>
+        <p class="start-copy">A focused drive through the high country. Keep the tires underneath you, carry speed through the sweepers, and make every corner count.</p>
+        <div class="session-stats">
+          <div><span>ROUTE</span><strong>HILLSIDE PASS</strong><small>4.8 KM · 03 LAPS</small></div>
+          <div><span>CONDITIONS</span><strong><i class="weather-sun"></i> CLEAR</strong><small>18°C · LIGHT WIND</small></div>
+          <div><span>VEHICLE</span><strong>APX-04 / RWD</strong><small>2.0 TURBO · 6 SPEED</small></div>
+        </div>
+        <button class="start-button" id="startButton" type="button"><span class="start-button-icon">▶</span><span>START ENGINE</span><small>ENTER</small></button>
+        <div class="start-footnote"><span class="pulse-ring"></span> Best experienced with a keyboard · <b>W A S D</b> to drive</div>
+      </div>
+    </section>
+
+    <section class="pause-overlay" id="pauseOverlay" aria-hidden="true">
+      <div class="pause-card glass-panel">
+        <span class="panel-kicker"><span class="kicker-line"></span> SESSION PAUSED</span>
+        <h2>Take a breath.</h2>
+        <p>The car is held in place. Press <b>P</b> or resume when you are ready.</p>
+        <button class="resume-button" id="resumeButton" type="button">RESUME DRIVE <span>▶</span></button>
+      </div>
+    </section>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-mark">✓</span><span id="toastText">Session ready</span></div>
+
+    <div class="mobile-controls" aria-label="Touch driving controls">
+      <div class="steering-controls"><button data-control="left" aria-label="Steer left">‹</button><button data-control="right" aria-label="Steer right">›</button></div>
+      <div class="pedal-controls"><button data-control="brake" aria-label="Brake">BRAKE</button><button data-control="throttle" aria-label="Throttle">THROTTLE</button></div>
+    </div>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
