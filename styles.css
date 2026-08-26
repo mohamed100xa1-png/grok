@@ -411,3 +411,205 @@ button { font: inherit; }
   .telemetry-divider { margin: 12px 0; }
   .bottom-ui { bottom: 13px; }
 }
+
+/* Street Rush visual language: blue race instrumentation, red badge, black
+   performance car, and a control-guide composition inspired by arcade manuals. */
+:root { --blue: #277fe1; --blue-bright: #69b5ff; --red: #e51d29; --red-dark: #8f1018; }
+
+.street-emblem { border-color: rgba(39, 127, 225, .76); transform: skewX(-13deg) rotate(-18deg); }
+.street-emblem span { background: var(--blue-bright); }
+.street-emblem span:nth-child(1) { opacity: .45; }
+.street-emblem span:nth-child(2) { opacity: .72; }
+.street-emblem span:nth-child(3) { opacity: 1; }
+.street-logo, .guide-street-logo { display: flex; flex-direction: column; width: max-content; color: #f2f4f1; font-style: italic; font-weight: 900; line-height: .7; letter-spacing: -.08em; transform: skewX(-9deg); text-shadow: 3px 4px 0 rgba(0, 0, 0, .34); }
+.street-logo { font-size: 14px; }
+.street-logo strong, .guide-street-logo strong { font-weight: 900; }
+.street-logo b, .guide-street-logo b { color: var(--red); font-size: 1.47em; letter-spacing: -.12em; text-shadow: 3px 4px 0 rgba(62, 3, 8, .55); }
+.topbar .micro-label { margin-top: 7px; margin-bottom: 0; color: #73828d; }
+.topbar .status-dot { background: var(--blue-bright); box-shadow: 0 0 0 4px rgba(39,127,225,.12), 0 0 13px var(--blue); }
+.topbar .icon-button:hover { color: var(--blue-bright); border-color: rgba(105,181,255,.6); background: rgba(11,25,42,.82); }
+
+.position-panel { padding: 15px 18px 13px; }
+.race-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; margin-top: 16px; }
+.race-stat { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.blue-number, .guide-list i { display: grid; place-items: center; width: 28px; height: 28px; flex: 0 0 auto; border: 1px solid rgba(115, 192, 255, .84); border-radius: 50%; color: #fff; background: linear-gradient(145deg, #318ef2, #135dc0); box-shadow: 0 3px 10px rgba(0, 75, 179, .28), inset 0 1px 0 rgba(255,255,255,.3); font: 14px var(--mono); letter-spacing: -.1em; }
+.race-stat small { display: block; color: #809099; font: 8px var(--mono); letter-spacing: .1em; }
+.race-stat strong { display: block; margin-top: 3px; color: #f3f4ee; font: italic 25px var(--sans); font-weight: 700; letter-spacing: -.08em; line-height: .9; }
+.race-stat strong span { color: #b5c0c3; font-size: .62em; font-style: normal; letter-spacing: -.05em; }
+.race-status-line { display: flex; align-items: center; gap: 7px; margin-top: 16px; padding-top: 11px; border-top: 1px solid var(--line); color: #708089; font: 8px var(--mono); letter-spacing: .08em; }
+.status-bar { width: 16px; height: 2px; background: var(--blue); box-shadow: 0 0 7px rgba(39,127,225,.76); }
+
+.map-panel { border-color: rgba(116, 165, 205, .2); }
+.map-panel .panel-heading strong { color: #ccd6d9; }
+.map-panel .panel-kicker .kicker-line { background: var(--blue-bright); box-shadow: 0 0 8px rgba(105,181,255,.55); }
+.map-wrap { background: rgba(5, 13, 22, .48); }
+.map-footer { color: #80909b; }
+.legend-dot.player { background: var(--red); box-shadow: 0 0 7px var(--red); }
+.legend-line { background: var(--blue-bright); }
+
+.objective-panel { padding: 18px 20px 17px; border-color: rgba(104, 168, 222, .25); }
+.objective-title, .guide-card-title { display: flex; align-items: center; gap: 9px; color: var(--blue-bright); }
+.objective-title strong, .guide-card-title strong { font-size: 13px; letter-spacing: .07em; }
+.flag-mark { color: #e6eff6; font-size: 23px; line-height: 1; text-shadow: 0 0 12px rgba(105,181,255,.3); }
+.objective-panel p { margin: 15px 0 8px; color: #dae1e1; font-size: 11px; line-height: 1.35; }
+.objective-panel > span { display: block; color: #89979d; font-size: 9px; line-height: 1.65; }
+
+.right-rail .telemetry-panel { border-color: rgba(104, 168, 222, .24); }
+.right-rail .telemetry-panel .kicker-line { background: var(--blue-bright); box-shadow: 0 0 8px rgba(105,181,255,.55); }
+.nitro-block { margin-top: 15px; }
+.nitro-label { display: flex; justify-content: space-between; color: #aab7ba; font: 8px var(--mono); letter-spacing: .1em; }
+.nitro-label > span:last-child { color: var(--blue-bright); }
+.nitro-icon { display: inline-grid; place-items: center; width: 13px; height: 13px; margin-right: 4px; border: 1px solid rgba(105,181,255,.6); border-radius: 3px; color: #d8f0ff; font-style: normal; font-size: 10px; vertical-align: -2px; }
+.nitro-track { position: relative; height: 7px; margin-top: 7px; overflow: hidden; border: 1px solid rgba(105,181,255,.3); background: rgba(33, 86, 136, .2); }
+.nitro-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #176ed7, #4cb4ff); box-shadow: 0 0 12px rgba(59,164,255,.7); transition: width .1s linear; }
+.nitro-segments { position: absolute; inset: 0; background: repeating-linear-gradient(105deg, transparent 0 11px, rgba(2, 23, 50, .7) 11px 14px); pointer-events: none; }
+.nitro-block.is-active .nitro-fill { background: linear-gradient(90deg, #b9edff, #39aaff, #2973ff); box-shadow: 0 0 20px #45baff; }
+.corner-panel { border-color: rgba(104, 168, 222, .24); }
+.corner-panel .corner-bar span { background: var(--blue-bright); box-shadow: 0 0 9px rgba(105,181,255,.62); }
+
+/* The launch screen doubles as the full Street Rush control guide. */
+.start-overlay { padding: 20px 31px; display: flex; align-items: center; justify-content: center; overflow: auto; background: linear-gradient(180deg, rgba(3,7,12,.63), rgba(3,7,12,.84)); }
+.guide-shell { position: relative; width: min(1430px, 100%); padding: 22px 28px 15px; border: 1px solid rgba(171, 199, 216, .36); border-radius: 4px; background: linear-gradient(135deg, rgba(5, 12, 19, .84), rgba(4, 9, 14, .91)); box-shadow: 0 25px 100px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.guide-shell::before, .guide-shell::after { content: ''; position: absolute; width: 24px; height: 24px; border-color: var(--blue-bright); border-style: solid; opacity: .8; }
+.guide-shell::before { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+.guide-shell::after { right: -1px; bottom: -1px; border-width: 0 1px 1px 0; }
+.guide-header { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid rgba(183, 209, 225, .26); }
+.guide-brand { display: flex; align-items: flex-end; gap: 16px; }
+.guide-street-logo { font-size: 32px; transform-origin: left bottom; }
+.guide-brand > span { margin-bottom: 3px; color: #a9b5bd; font: 10px var(--mono); letter-spacing: .21em; }
+.guide-session { display: flex; align-items: center; gap: 8px; color: #9daab1; font: 9px var(--mono); letter-spacing: .15em; }
+.guide-session .status-dot { width: 5px; height: 5px; background: var(--blue-bright); box-shadow: 0 0 8px var(--blue); }
+.guide-session i { display: block; width: 1px; height: 13px; margin: 0 3px; background: rgba(180,207,225,.27); }
+.guide-main { display: grid; grid-template-columns: minmax(280px, 1.35fr) minmax(205px, .72fr) minmax(265px, 1fr); gap: 15px; padding: 20px 0 18px; }
+.guide-intro { padding: 4px 14px 0 4px; }
+.guide-intro .start-eyebrow { color: var(--blue-bright); font-size: 8px; }
+.guide-intro .start-eyebrow > span { background: var(--blue-bright); box-shadow: 0 0 8px var(--blue); }
+.guide-intro h2 { margin: 16px 0 9px; color: #f0f3f0; font-size: clamp(40px, 5vw, 65px); font-weight: 800; line-height: .88; letter-spacing: -.09em; }
+.guide-intro h2 em { color: var(--red); font-style: normal; text-shadow: 2px 2px 0 rgba(79,5,10,.45); }
+.guide-intro p { max-width: 365px; margin: 0 0 19px; color: #9aa8af; font-size: 11px; line-height: 1.6; }
+.guide-intro .start-button { max-width: 280px; height: 45px; color: white; background: linear-gradient(110deg, #c91420, #ef3036); box-shadow: 0 0 0 1px rgba(244,80,86,.3), 0 9px 25px rgba(184,13,24,.2); }
+.guide-intro .start-button:hover { background: linear-gradient(110deg, #e01d29, #ff464b); box-shadow: 0 0 0 1px rgba(255,117,121,.5), 0 12px 30px rgba(184,13,24,.35); }
+.guide-intro .start-button small { color: rgba(255,255,255,.58); }
+.guide-card { min-height: 166px; padding: 18px 18px 16px; border: 1px solid rgba(183, 209, 225, .3); border-radius: 3px; background: linear-gradient(140deg, rgba(9,20,30,.72), rgba(4,11,18,.62)); }
+.guide-card-title { padding-bottom: 12px; border-bottom: 1px solid rgba(183, 209, 225, .2); }
+.guide-card-title strong { color: #278ce9; font-size: 15px; }
+.guide-card p { margin: 18px 0 8px; color: #dae2e4; font-size: 12px; line-height: 1.35; }
+.guide-card > span { color: #91a0a8; font-size: 9px; line-height: 1.7; }
+.hud-guide .guide-card-title { justify-content: flex-start; }
+.hud-guide .guide-list { display: flex; flex-direction: column; gap: 8px; padding-top: 13px; }
+.guide-list div { display: flex; align-items: center; gap: 10px; color: #becacf; font-size: 10px; letter-spacing: .06em; }
+.guide-list i { width: 22px; height: 22px; color: white; font-size: 11px; font-style: normal; }
+.guide-controls { display: grid; grid-template-columns: 1.35fr 1fr 1.23fr; gap: 18px; padding: 17px 0 14px; border-top: 1px solid rgba(183, 209, 225, .26); border-bottom: 1px solid rgba(183, 209, 225, .2); }
+.controls-block, .tips-block, .camera-block { min-width: 0; }
+.tips-block, .camera-block { padding-left: 18px; border-left: 1px solid rgba(183, 209, 225, .2); }
+.guide-section-title { display: flex; align-items: center; gap: 7px; color: #d1dadd; font: 10px var(--mono); letter-spacing: .16em; }
+.guide-section-title > span { display: block; width: 20px; height: 1px; background: var(--blue-bright); box-shadow: 0 0 8px var(--blue); }
+.guide-section-title em { margin-left: auto; color: #75858e; font-size: 8px; font-style: normal; letter-spacing: .12em; }
+.key-guide-grid { display: grid; grid-template-columns: minmax(175px, 1.1fr) minmax(125px, .9fr); gap: 18px; margin-top: 14px; }
+.wasd-guide { position: relative; min-height: 109px; }
+.wasd-guide .key.big { width: 34px; height: 34px; padding: 0; font-size: 13px; }
+.wasd-guide > .key { margin-left: 47px; }
+.wasd-row { display: flex; gap: 6px; margin: 6px 0 0 5px; }
+.key-caption { position: absolute; color: #aebac0; font: 8px var(--mono); letter-spacing: .03em; white-space: nowrap; }
+.key-caption.accelerate { top: 9px; left: 93px; color: #c4ced2; }
+.key-caption.steer-left { top: 59px; left: 0; transform: translateX(-2px); }
+.key-caption.brake { top: 98px; left: 47px; }
+.key-caption.steer-right { top: 59px; left: 132px; }
+.control-list { display: flex; flex-direction: column; gap: 7px; padding-top: 1px; }
+.control-list div { display: flex; align-items: center; gap: 9px; color: #afbbc0; font: 8px var(--mono); letter-spacing: .04em; white-space: nowrap; }
+.control-list .key { min-width: 43px; height: 23px; color: #dce6e9; font-size: 8px; }
+.tips-list { display: flex; justify-content: space-between; gap: 14px; margin-top: 16px; }
+.tips-list > div { display: flex; flex-direction: column; gap: 8px; min-width: 0; color: #bdc8cc; font-size: 9px; line-height: 1.45; }
+.tips-list i { color: #dbe5e9; font: 23px Georgia, serif; font-style: normal; }
+.tips-list > div:first-child i { color: var(--blue-bright); }
+.camera-block .guide-section-title { justify-content: flex-end; }
+.camera-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 16px; }
+.camera-buttons button { min-width: 0; height: 65px; padding: 6px 4px; border: 1px solid rgba(183, 209, 225, .25); border-radius: 4px; color: #92a2aa; background: rgba(10,20,28,.62); cursor: pointer; transition: .2s ease; }
+.camera-buttons button:hover, .camera-buttons button.active { border-color: var(--blue-bright); color: #dbe8ed; box-shadow: 0 0 11px rgba(39,127,225,.3), inset 0 0 12px rgba(39,127,225,.1); }
+.camera-glyph { display: block; color: #b6c3c8; font-size: 19px; line-height: 20px; }
+.camera-buttons small { display: block; margin-top: 8px; font: 7px var(--mono); letter-spacing: .07em; }
+.guide-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 12px; color: #71818a; font: 8px var(--mono); letter-spacing: .08em; }
+.guide-foot b { color: #c2cdd1; font-weight: 400; }
+.guide-foot .pulse-ring { background: var(--blue-bright); box-shadow: 0 0 0 4px rgba(39,127,225,.12); }
+
+@media (max-width: 1120px) {
+  .guide-shell { padding: 18px 20px 13px; }
+  .guide-main { grid-template-columns: 1.12fr .8fr .92fr; gap: 10px; }
+  .guide-controls { gap: 10px; }
+  .tips-block, .camera-block { padding-left: 10px; }
+  .tips-list { gap: 7px; }
+  .key-guide-grid { gap: 8px; }
+  .right-rail .objective-panel { display: none; }
+}
+
+@media (max-width: 760px) {
+  .topbar .street-logo { font-size: 12px; }
+  .topbar .micro-label { font-size: 7px; }
+  .left-rail .position-panel { display: block; }
+  .start-overlay { align-items: flex-start; padding: 10px; }
+  .guide-shell { margin: auto 0; padding: 15px; }
+  .guide-header { align-items: flex-start; }
+  .guide-street-logo { font-size: 23px; }
+  .guide-brand { gap: 10px; align-items: flex-end; }
+  .guide-brand > span { font-size: 7px; letter-spacing: .12em; }
+  .guide-session { font-size: 7px; }
+  .guide-main { grid-template-columns: 1fr 1fr; padding: 16px 0; }
+  .guide-intro { grid-column: 1 / -1; padding: 0 2px 7px; }
+  .guide-intro h2 { font-size: 45px; }
+  .guide-intro p { max-width: 520px; }
+  .guide-intro .start-button { max-width: 100%; }
+  .guide-card { min-height: 143px; padding: 13px; }
+  .guide-controls { grid-template-columns: 1fr; gap: 16px; }
+  .tips-block, .camera-block { padding-left: 0; padding-top: 16px; border-top: 1px solid rgba(183, 209, 225, .2); border-left: 0; }
+  .tips-list { justify-content: flex-start; }
+  .camera-block .guide-section-title { justify-content: flex-start; }
+  .camera-buttons { max-width: 470px; }
+  .guide-foot { font-size: 7px; }
+  .guide-foot b { display: none; }
+}
+
+@media (max-width: 520px) {
+  .topbar .brand-lockup { gap: 7px; }
+  .topbar .street-emblem { display: none; }
+  .topbar .session-status { display: none; }
+  .top-actions { margin-left: auto; }
+  .right-rail { bottom: 74px; }
+  .guide-shell { width: 100%; }
+  .guide-header { padding-bottom: 12px; }
+  .guide-session { display: none; }
+  .guide-main { grid-template-columns: 1fr; }
+  .objective-guide, .hud-guide { min-height: 0; }
+  .hud-guide { display: none; }
+  .guide-intro h2 { font-size: 42px; }
+  .guide-intro p { font-size: 10px; }
+  .key-guide-grid { grid-template-columns: 1fr; }
+  .wasd-guide { max-width: 270px; }
+  .control-list { display: grid; grid-template-columns: 1fr 1fr; }
+  .tips-list { gap: 9px; }
+  .tips-list > div { font-size: 8px; }
+  .tips-list > div:last-child { display: none; }
+  .camera-buttons { gap: 5px; }
+  .camera-buttons button { height: 57px; }
+  .guide-foot { display: none; }
+}
+
+@media (max-width: 520px) {
+  .pedal-controls button:nth-child(2) { color: var(--blue-bright); border-color: rgba(105,181,255,.33); }
+  .pedal-controls button:last-child { color: var(--red); border-color: rgba(229,29,41,.38); }
+}
+
+/* Instrument cluster: a compact analog-style speedometer keeps the HUD close
+   to the reference control guide while retaining the readable digital value. */
+.right-rail .speed-row { position: relative; display: block; height: 108px; margin-top: 13px; }
+.right-rail .speed-row::before { content: ''; position: absolute; top: 0; right: -1px; width: 102px; height: 102px; border: 2px solid rgba(117, 190, 255, .62); border-radius: 50%; background: conic-gradient(from 218deg, #1676df 0deg 215deg, rgba(50, 107, 161, .28) 216deg 282deg, rgba(230, 55, 50, .9) 283deg 318deg, transparent 319deg 360deg); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px)); mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px)); opacity: .92; box-shadow: 0 0 18px rgba(39, 127, 225, .22); }
+.right-rail .speed-row::after { content: '1     3     5     7     9'; position: absolute; top: 14px; right: 8px; width: 83px; color: rgba(214, 230, 236, .78); font: 7px var(--mono); letter-spacing: .09em; word-spacing: 3px; transform: rotate(-20deg); white-space: pre; }
+.right-rail .speed-value { position: absolute; top: 40px; right: 20px; z-index: 1; font-size: 32px; letter-spacing: -.1em; }
+.right-rail .speed-unit { position: absolute; top: 73px; right: 20px; z-index: 1; font-size: 8px; }
+.right-rail .gear-row { margin-top: 1px; }
+@media (max-width: 520px) {
+  .right-rail .speed-row { height: 89px; }
+  .right-rail .speed-row::before { width: 83px; height: 83px; right: -1px; }
+  .right-rail .speed-row::after { top: 12px; right: 1px; width: 68px; font-size: 6px; }
+  .right-rail .speed-value { top: 32px; right: 13px; font-size: 24px; }
+  .right-rail .speed-unit { top: 57px; right: 12px; font-size: 6px; }
+}

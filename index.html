@@ -3,24 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#080c10" />
-  <title>Apex Drive — Hillside Pass</title>
+  <meta name="theme-color" content="#05080c" />
+  <title>Street Rush — City Circuit</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="sim-shell" aria-label="Apex Drive car simulation">
-    <canvas id="gameCanvas" aria-label="Driving simulation view"></canvas>
+  <main class="sim-shell" aria-label="Street Rush realistic car simulation">
+    <canvas id="gameCanvas" aria-label="City street racing simulation view"></canvas>
     <div class="screen-grain" aria-hidden="true"></div>
     <div class="screen-vignette" aria-hidden="true"></div>
 
     <header class="topbar">
       <div class="brand-lockup">
-        <div class="brand-emblem" aria-hidden="true">
-          <span></span><span></span><span></span>
-        </div>
+        <div class="brand-emblem street-emblem" aria-hidden="true"><span></span><span></span><span></span></div>
         <div>
-          <div class="micro-label">MOTORSPORT / SIMULATION</div>
-          <div class="brand-name">APEX<span>DRIVE</span></div>
+          <div class="street-logo"><strong>STREET</strong><b>RUSH</b></div>
+          <div class="micro-label">CONTROL GUIDE / CITY CIRCUIT</div>
         </div>
       </div>
 
@@ -32,6 +30,7 @@
       </div>
 
       <div class="top-actions">
+        <button class="icon-button" id="guideButton" type="button" aria-label="Open control guide" title="Open control guide">?</button>
         <button class="icon-button" id="soundButton" type="button" aria-label="Mute engine audio" title="Mute engine audio">
           <svg class="sound-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.5-.7a5 5 0 0 1 0 7.4M18.7 5.8a9.5 9.5 0 0 1 0 12.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <svg class="sound-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm14 1-4 4m0-4 4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -44,45 +43,43 @@
     </header>
 
     <aside class="left-rail">
-      <section class="glass-panel route-panel">
-        <div class="panel-kicker"><span class="kicker-line"></span> CURRENT SESSION</div>
-        <div class="route-heading">
-          <div>
-            <h1>Hillside Pass</h1>
-            <p>North loop · Sector 03</p>
-          </div>
-          <div class="route-badge">RWD</div>
+      <section class="glass-panel position-panel">
+        <div class="panel-kicker"><span class="kicker-line"></span> RACE CONTROL</div>
+        <div class="race-stats">
+          <div class="race-stat"><span class="blue-number">1</span><div><small>POSITION</small><strong id="positionValue">1<span>/8</span></strong></div></div>
+          <div class="race-stat"><span class="blue-number">2</span><div><small>LAP</small><strong id="raceLapValue">1<span>/3</span></strong></div></div>
         </div>
-        <div class="route-meta">
-          <div><span class="meta-icon">↗</span><span>4.8 <small>KM</small></span></div>
-          <div><span class="meta-icon">◷</span><span>DRY <small>ASPHALT</small></span></div>
-        </div>
-        <div class="progress-label"><span>ROUTE PROGRESS</span><span id="routeProgressLabel">00%</span></div>
-        <div class="progress-track"><div class="progress-fill" id="routeProgress"></div></div>
+        <div class="race-status-line"><span class="status-bar"></span><span id="raceStatusText">GRID POSITION LOCKED</span></div>
       </section>
 
       <section class="glass-panel map-panel">
         <div class="panel-heading">
-          <div><span class="panel-kicker"><span class="kicker-line"></span> LIVE MAP</span><strong>HILLSIDE PASS</strong></div>
+          <div><span class="panel-kicker"><span class="kicker-line"></span> MINI MAP</span><strong>DOWNTOWN LOOP</strong></div>
           <span class="map-north">N</span>
         </div>
         <div class="map-wrap">
-          <canvas id="mapCanvas" aria-label="Live track map"></canvas>
-          <span class="map-coordinate" id="mapCoordinate">46° 08′ N / 7° 14′ E</span>
+          <canvas id="mapCanvas" aria-label="Live city track map"></canvas>
+          <span class="map-coordinate" id="mapCoordinate">40.712° N / 74.006° W</span>
         </div>
-        <div class="map-footer"><span><i class="legend-dot player"></i> YOU</span><span><i class="legend-line"></i> TRACK</span><span>1 / 3 LAPS</span></div>
+        <div class="map-footer"><span><i class="legend-dot player"></i> YOU</span><span><i class="legend-line"></i> ROUTE</span><span>3.8 KM</span></div>
       </section>
 
       <section class="glass-panel tip-panel">
-        <div class="tip-icon">i</div>
-        <div><strong>Find the line.</strong><span>Brake before the apex, then feed in the throttle.</span></div>
+        <div class="tip-icon">!</div>
+        <div><strong>Street tip</strong><span>Use nitro on straight roads for maximum speed.</span></div>
       </section>
     </aside>
 
     <aside class="right-rail">
+      <section class="glass-panel objective-panel">
+        <div class="objective-title"><span class="flag-mark">⚑</span><strong>OBJECTIVE</strong></div>
+        <p>Be the first to cross the finish line.</p>
+        <span>Earn cash, upgrade your car<br />and unlock new races!</span>
+      </section>
+
       <section class="glass-panel telemetry-panel">
         <div class="telemetry-topline">
-          <span class="panel-kicker"><span class="kicker-line"></span> VEHICLE TELEMETRY</span>
+          <span class="panel-kicker"><span class="kicker-line"></span> HUD OVERVIEW</span>
           <span class="telemetry-live"><i></i> LIVE</span>
         </div>
         <div class="speed-row">
@@ -98,6 +95,10 @@
           <div class="rpm-label"><span>ENGINE LOAD</span><span id="rpmValue">0.9k RPM</span></div>
           <div class="rpm-track"><div class="rpm-fill" id="rpmFill"></div><div class="rpm-redline"></div></div>
           <div class="rpm-scale"><span>0</span><span>3</span><span>6</span><span>9K</span></div>
+        </div>
+        <div class="nitro-block">
+          <div class="nitro-label"><span><i class="nitro-icon">ϟ</i> NITRO</span><span id="nitroValue">100%</span></div>
+          <div class="nitro-track"><div class="nitro-fill" id="nitroFill"></div><div class="nitro-segments"></div></div>
         </div>
         <div class="telemetry-divider"></div>
         <div class="telemetry-grid">
@@ -124,23 +125,62 @@
 
     <footer class="bottom-ui">
       <div class="drive-state"><span class="state-light"></span><strong id="driveState">PARKED</strong><span class="state-divider"></span><span id="surfaceState">READY FOR SESSION</span></div>
-      <div class="control-hint"><span class="key key-wide">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span><span>DRIVE</span><span class="hint-separator"></span><span class="key key-wide">SPACE</span><span>HANDBRAKE</span></div>
+      <div class="control-hint"><span class="key key-wide">W</span><span>ACCELERATE</span><span class="key">A</span><span class="key">D</span><span>STEER</span><span class="hint-separator"></span><span class="key">SHIFT</span><span>NITRO</span><span class="hint-separator"></span><span class="key key-wide">SPACE</span><span>HANDBRAKE</span></div>
       <button class="reset-button" id="resetButton" type="button"><span>↻</span> RESET CAR <small>R</small></button>
     </footer>
 
     <section class="start-overlay" id="startOverlay">
       <div class="start-glow" aria-hidden="true"></div>
-      <div class="start-card">
-        <div class="start-eyebrow"><span></span> APEX DRIVE / SESSION 01</div>
-        <h2>Own the<br /><em>apex.</em></h2>
-        <p class="start-copy">A focused drive through the high country. Keep the tires underneath you, carry speed through the sweepers, and make every corner count.</p>
-        <div class="session-stats">
-          <div><span>ROUTE</span><strong>HILLSIDE PASS</strong><small>4.8 KM · 03 LAPS</small></div>
-          <div><span>CONDITIONS</span><strong><i class="weather-sun"></i> CLEAR</strong><small>18°C · LIGHT WIND</small></div>
-          <div><span>VEHICLE</span><strong>APX-04 / RWD</strong><small>2.0 TURBO · 6 SPEED</small></div>
+      <div class="guide-shell">
+        <div class="guide-header">
+          <div class="guide-brand">
+            <div class="guide-street-logo"><strong>STREET</strong><b>RUSH</b></div>
+            <span>CONTROL GUIDE</span>
+          </div>
+          <div class="guide-session"><span class="status-dot"></span> CITY CIRCUIT <i></i> RACE 01</div>
         </div>
-        <button class="start-button" id="startButton" type="button"><span class="start-button-icon">▶</span><span>START ENGINE</span><small>ENTER</small></button>
-        <div class="start-footnote"><span class="pulse-ring"></span> Best experienced with a keyboard · <b>W A S D</b> to drive</div>
+
+        <div class="guide-main">
+          <div class="guide-intro">
+            <div class="start-eyebrow"><span></span> RACE READY / SR-08 BLACK EDITION</div>
+            <h2>Own the<br /><em>streets.</em></h2>
+            <p>Thread through the downtown loop, manage your tires and use every burst of nitro. Clean lines win races.</p>
+            <button class="start-button" id="startButton" type="button"><span class="start-button-icon">▶</span><span>START ENGINE</span><small>ENTER</small></button>
+          </div>
+          <div class="guide-card objective-guide">
+            <div class="guide-card-title"><span class="flag-mark">⚑</span><strong>OBJECTIVE</strong></div>
+            <p>Be the first to cross the finish line.</p>
+            <span>Earn cash, upgrade your car<br />and unlock new races!</span>
+          </div>
+          <div class="guide-card hud-guide">
+            <div class="guide-card-title"><strong>HUD OVERVIEW</strong></div>
+            <div class="guide-list"><div><i>1</i><span>POSITION</span></div><div><i>2</i><span>LAP &amp; TOTAL LAPS</span></div><div><i>3</i><span>MINI MAP</span></div><div><i>4</i><span>SPEEDOMETER</span></div><div><i>5</i><span>NITRO METER</span></div></div>
+          </div>
+        </div>
+
+        <div class="guide-controls">
+          <div class="controls-block">
+            <div class="guide-section-title"><span></span> CONTROLS <em>KEYBOARD</em></div>
+            <div class="key-guide-grid">
+              <div class="wasd-guide"><div class="key big">W</div><div class="wasd-row"><div class="key big">A</div><div class="key big">S</div><div class="key big">D</div></div><div class="key-caption accelerate">ACCELERATE</div><div class="key-caption steer-left">STEER LEFT</div><div class="key-caption brake">BRAKE / REVERSE</div><div class="key-caption steer-right">STEER RIGHT</div></div>
+              <div class="control-list"><div><span class="key">SPACE</span><span>HANDBRAKE</span></div><div><span class="key">SHIFT</span><span>NITRO</span></div><div><span class="key">R</span><span>RESET CAR</span></div><div><span class="key">C</span><span>CHANGE CAMERA</span></div><div><span class="key">ESC</span><span>PAUSE MENU</span></div></div>
+            </div>
+          </div>
+          <div class="tips-block">
+            <div class="guide-section-title"><span></span> TIPS</div>
+            <div class="tips-list"><div><i>ϟ</i><span>Use nitro on straight<br />roads for maximum speed.</span></div><div><i>◒</i><span>Use handbrake<br />to take sharp corners.</span></div><div><i>$</i><span>Win races to earn cash<br />and upgrade your car.</span></div></div>
+          </div>
+          <div class="camera-block">
+            <div class="guide-section-title">CAMERA ANGLES</div>
+            <div class="camera-buttons">
+              <button type="button" data-camera="hood"><span class="camera-glyph">▰</span><small>HOOD</small></button>
+              <button type="button" data-camera="chase" class="active"><span class="camera-glyph">▰</span><small>CHASE</small></button>
+              <button type="button" data-camera="bumper"><span class="camera-glyph">▱</span><small>BUMPER</small></button>
+              <button type="button" data-camera="cockpit"><span class="camera-glyph">◉</span><small>COCKPIT</small></button>
+            </div>
+          </div>
+        </div>
+        <div class="guide-foot"><span class="pulse-ring"></span> SR-08 / RWD · 2.0 TURBO · 6 SPEED · CLEAR 18°C <b>Press ENTER to start</b></div>
       </div>
     </section>
 
@@ -157,7 +197,7 @@
 
     <div class="mobile-controls" aria-label="Touch driving controls">
       <div class="steering-controls"><button data-control="left" aria-label="Steer left">‹</button><button data-control="right" aria-label="Steer right">›</button></div>
-      <div class="pedal-controls"><button data-control="brake" aria-label="Brake">BRAKE</button><button data-control="throttle" aria-label="Throttle">THROTTLE</button></div>
+      <div class="pedal-controls"><button data-control="brake" aria-label="Brake">BRAKE</button><button data-control="nitro" aria-label="Nitro boost">NITRO</button><button data-control="throttle" aria-label="Throttle">THROTTLE</button></div>
     </div>
   </main>
   <script src="game.js"></script>
