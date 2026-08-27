@@ -74,7 +74,7 @@ else:
 try:
     import openai
     # Set your OpenAI API key either via environment variable or here.
-    openai.api_key = os.getenv("OPENAI_API_KEY") or "sk-YOUR-KEY-HERE"
+    # API key will be set in main() after argument parsing
 except ImportError:
     print(
         "⚠️  openai package not installed. Install with: pip install openai"
@@ -152,7 +152,16 @@ def main(argv: Optional[list] = None) -> None:
         default="az_image_1.png",
         help="File path for the final AZ‑Image 1 result.",
     )
+    parser.add_argument(
+        "--api-key",
+        type=str,
+        default=None,
+        help="OpenAI API key (overrides OPENAI_API_KEY env var).",
+    )
     args = parser.parse_args(argv)
+
+    # Set OpenAI API key (CLI arg > env var > default)
+    openai.api_key = args.api_key or os.getenv("OPENAI_API_KEY") or "sk-YOUR-KEY-HERE"
 
     # ------------------------------------------------------------------
     # Step 1 – Seedream 2.5
